@@ -48,12 +48,12 @@ namespace GamersChatAPI.Repositories
 
         public IEnumerable<Post> GetAll()
         {
-            return _dbContext.Set<Post>().Include(a => a.PostContent).Include(b => b.PostImage).Include(c => c.PostComments).ToList();
+            return _dbContext.Set<Post>().ToList();
         }
 
         public Post GetById(Guid id)
         {
-            var postToReturn = _dbContext.Set<Post>().Where(a => a.Id == id).Include(b => b.UserId).FirstOrDefault();
+            var postToReturn = _dbContext.Set<Post>().Where(a => a.Id == id).FirstOrDefault();
             if (postToReturn == null)
             {
                 throw new KeyNotFoundException("Post not found.");

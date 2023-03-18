@@ -1,4 +1,6 @@
 using GamersChatAPI.Repositories;
+using GamersChatAPI.Repositories.Interfaces;
+using GamersChatAPI.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +9,29 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 
 // Add services to the container.
+builder.Services.AddScoped<NewsService>();
+builder.Services.AddScoped<INewsRepository, NewsRepository>();
+
+builder.Services.AddScoped<CartService>();
+builder.Services.AddScoped<ICartRepository, CartRepository>();
+
+builder.Services.AddScoped<PostCommentService>();
+builder.Services.AddScoped<IPostCommentRepository, PostCommentRepository>();
+
+builder.Services.AddScoped<PostService>();
+builder.Services.AddScoped<IPostRepository, PostRepository>();
+
+builder.Services.AddScoped<ProductCommentService>();
+builder.Services.AddScoped<IProductCommentRepository, ProductCommentRepository>();
+
+builder.Services.AddScoped<ProductService>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+
+builder.Services.AddScoped<TimelineService>();
+builder.Services.AddScoped<ITimelineRepository, TimelineRepository>();
+
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddControllers();
 

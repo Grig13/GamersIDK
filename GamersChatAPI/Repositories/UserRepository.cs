@@ -29,7 +29,7 @@ namespace GamersChatAPI.Repositories
 
         public IEnumerable<User> GetAll()
         {
-            return _dbContext.Set<User>().Include(a => a.Name).Include(b => b.Role).ToList();
+            return _dbContext.Set<User>().ToList();
         }
 
         public User GetById(Guid id)

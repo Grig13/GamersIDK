@@ -48,12 +48,12 @@ namespace GamersChatAPI.Repositories
 
         public IEnumerable<Product> GetAll()
         {
-            return _dbContext.Set<Product>().Include(a => a.Name).Include(b => b.Price).Include(c => c.Description).Include(d => d.Comments).ToList();
+            return _dbContext.Set<Product>().ToList();
         }
 
         public Product GetById(Guid id)
         {
-            var productToReturn = _dbContext.Set<Product>().Where(a => a.Id == id).Include(b => b.Comments).FirstOrDefault();
+            var productToReturn = _dbContext.Set<Product>().Where(a => a.Id == id).FirstOrDefault();
             if (productToReturn == null)
             {
                 throw new KeyNotFoundException("Product not found.");

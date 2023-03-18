@@ -22,12 +22,12 @@ namespace GamersChatAPI.Repositories
 
         public IEnumerable<ProductComment> GetAll()
         {
-            return _dbContext.Set<ProductComment>().Include(a => a.CommentContent).Include(b => b.Grade).ToList();
+            return _dbContext.Set<ProductComment>().ToList();
         }
 
         public ProductComment GetById(Guid id)
         {
-            var productCommToReturn = _dbContext.Set<ProductComment>().Where(a => a.Id == id).Include(b => b.CommentContent).Include(c => c.Grade).FirstOrDefault();
+            var productCommToReturn = _dbContext.Set<ProductComment>().Where(a => a.Id == id).FirstOrDefault();
             if (productCommToReturn == null)
             {
                 throw new KeyNotFoundException("Comment not found.");

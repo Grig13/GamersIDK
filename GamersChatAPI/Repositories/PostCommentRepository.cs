@@ -22,7 +22,7 @@ namespace GamersChatAPI.Repositories
 
         public IEnumerable<PostComment> GetAll()
         {
-            return _dbContext.Set<PostComment>().Include(a => a.CommentContent).Include(b => b.Post).ToList();
+            return _dbContext.Set<PostComment>().ToList();
         }
 
         public PostComment Add(PostComment commentToAdd)
@@ -34,7 +34,7 @@ namespace GamersChatAPI.Repositories
 
         public PostComment GetById(Guid id)
         {
-            var postCommentToReturn = _dbContext.Set<PostComment>().Where(a => a.Id == id).Include(b => b.UserId).Include(c => c.UserId).FirstOrDefault();
+            var postCommentToReturn = _dbContext.Set<PostComment>().Where(a => a.Id == id).FirstOrDefault();
             if (postCommentToReturn == null)
             {
                 throw new KeyNotFoundException("Post Comment not found.");

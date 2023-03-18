@@ -14,11 +14,13 @@ namespace GamersChatAPI.Repositories
 
         public News GetById(Guid id)
         {
-            var newsToReturn = _dbContext.Set<News>().Where(p => p.Id == id).Include(u => u.Content).Include(q => q.Image).Include(r => r.Attachment).FirstOrDefault();
+            var newsToReturn = _dbContext.Set<News>().Where(p => p.Id == id).FirstOrDefault();
+
             if (newsToReturn == null)
             {
                 throw new KeyNotFoundException("News article not found.");
             }
+
             return newsToReturn;
         }
 
@@ -38,7 +40,7 @@ namespace GamersChatAPI.Repositories
 
         public IEnumerable<News> GetAll()
         {
-            return _dbContext.Set<News>().Include(a => a.Content).Include(b => b.Image).Include(c => c.Attachment).ToList();
+            return _dbContext.Set<News>().ToList();
         }
 
         public News Update(News newsToUpdate)

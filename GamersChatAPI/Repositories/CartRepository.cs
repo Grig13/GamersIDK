@@ -27,6 +27,14 @@ namespace GamersChatAPI.Repositories
         public Cart AddProductToCart(Guid cartId, Product productToAdd)
         {
             var cart = GetById(cartId);
+            if (cart == null)
+            {
+                throw new ArgumentException("Cart with given Id not found", nameof(cartId));
+            }
+            if(cart.Products == null)
+            {
+                cart.Products = new List<Product>();
+            }
             cart.Products.Add(productToAdd);
             this._dbContext.SaveChanges();
             return cart;
@@ -42,12 +50,12 @@ namespace GamersChatAPI.Repositories
 
         public IEnumerable<Cart> GetAll()
         {
-            return _dbContext.Set<Cart>().Include(a => a.Products).Include(b => b.Quantity).ToList();
+            return _dbContext.Set<Cart>().ToList();
         }
 
         public Cart GetById(Guid id)
         {
-            var cartToReturn = _dbContext.Set<Cart>().Where(a => a.Id == id).Include(b => b.Products).Include(c => c.Quantity).FirstOrDefault();
+            var cartToReturn = _dbContext.Set<Cart>().Where(a => a.Id == id).FirstOrDefault();
             if (cartToReturn == null)
             {
                 throw new KeyNotFoundException("Cart not found.");

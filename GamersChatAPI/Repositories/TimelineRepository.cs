@@ -46,7 +46,7 @@ namespace GamersChatAPI.Repositories
 
         public Timeline GetById(Guid id)
         {
-            var timelineToReturn = _dbContext.Set<Timeline>().Where(a => a.Id == id).Include(b => b.Posts).FirstOrDefault();
+            var timelineToReturn = _dbContext.Set<Timeline>().Where(a => a.Id == id).FirstOrDefault();
             if (timelineToReturn == null)
             {
                 throw new KeyNotFoundException("Timeline not found.");
