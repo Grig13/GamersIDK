@@ -45,9 +45,16 @@ namespace GamersChatAPI.Repositories
 
         public News Update(News newsToUpdate)
         {
-            _dbContext.Set<News>().Update(newsToUpdate);
+            var existingNews = GetById(newsToUpdate.Id);
+            if(existingNews == null)
+            {
+                throw new ArgumentException($"News with id: {newsToUpdate.Id} not found.");
+            }
+            existingNews.Content = newsToUpdate.Content;
+            existingNews.Image = newsToUpdate.Image;
+            existingNews.Attachment = newsToUpdate.Attachment;
             _dbContext.SaveChanges();
-            return newsToUpdate;
+            return existingNews;
         }
     }
 }
