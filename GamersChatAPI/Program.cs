@@ -33,6 +33,10 @@ builder.Services.AddScoped<ITimelineRepository, TimelineRepository>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
+builder.Services.AddControllersWithViews().AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+);
+
 builder.Services.AddControllers();
 
 builder.Services.AddDbContext<GamersChatDbContext>(options =>
@@ -48,7 +52,10 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(a =>
+    {
+        a.InjectStylesheet("/swagger-ui/SwaggerDark.css");
+    });
 }
 
 app.UseHttpsRedirection();

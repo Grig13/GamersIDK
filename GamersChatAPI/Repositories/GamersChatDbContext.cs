@@ -14,7 +14,7 @@ namespace GamersChatAPI.Repositories
         DbSet<News> News { get; set; }
         DbSet<Post> Posts { get; set; }
         DbSet<PostComment> PostComments { get; set; }
-        DbSet<Product> Products { get; set; }
+        public DbSet<Product> Products { get; set; }
         DbSet<ProductComment> ProductComments { get; set; }
         DbSet<Timeline> Timelines { get; set; }
         DbSet<User> Users { get; set; }

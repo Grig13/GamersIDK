@@ -1,6 +1,7 @@
 ﻿using GamersChatAPI.Models;
 using GamersChatAPI.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Transactions;
 
 namespace GamersChatAPI.Repositories
 {
@@ -44,9 +45,22 @@ namespace GamersChatAPI.Repositories
 
         public ProductComment Add(ProductComment productCommentToAdd)
         {
-            var productComment = this._dbContext.Set<ProductComment>().Add(productCommentToAdd);
-            _dbContext.SaveChanges();
-            return productComment.Entity;
+            using (var scope = new TransactionScope())
+            {
+                var productId = productCommentToAdd.ProductId;
+                var product = _dbContext.Set<Product>().FirstOrDefault(p => p.Id == productId);
+
+                if (product == null)
+                {
+                    throw new KeyNotFoundException("Product not found.");
+                }
+
+                var productComment = this._dbContext.Set<ProductComment>().Add(productCommentToAdd);
+                _dbContext.SaveChanges();
+
+                scope.Complete();
+                return productComment.Entity;
+            }
         }
     }
 }

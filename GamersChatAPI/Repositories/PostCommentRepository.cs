@@ -27,6 +27,7 @@ namespace GamersChatAPI.Repositories
 
         public PostComment Add(PostComment commentToAdd)
         {
+
             var comment = this._dbContext.Set<PostComment>().Add(commentToAdd);
             this._dbContext.SaveChanges();
             return comment.Entity;

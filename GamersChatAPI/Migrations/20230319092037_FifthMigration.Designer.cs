@@ -4,6 +4,7 @@ using GamersChatAPI.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GamersChatAPI.Migrations
 {
     [DbContext(typeof(GamersChatDbContext))]
-    partial class GamersChatDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230319092037_FifthMigration")]
+    partial class FifthMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -200,11 +203,13 @@ namespace GamersChatAPI.Migrations
                         .WithMany("Posts")
                         .HasForeignKey("TimelineId");
 
-                    b.HasOne("GamersChatAPI.Models.User", null)
+                    b.HasOne("GamersChatAPI.Models.User", "User")
                         .WithMany("Posts")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("GamersChatAPI.Models.PostComment", b =>

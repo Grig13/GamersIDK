@@ -42,7 +42,7 @@ namespace GamersChatAPI.Migrations
                 column: "ProductId",
                 principalTable: "Products",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.SetNull);
         }
 
         /// <inheritdoc />
