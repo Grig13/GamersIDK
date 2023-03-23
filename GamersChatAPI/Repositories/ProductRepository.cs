@@ -13,17 +13,6 @@ namespace GamersChatAPI.Repositories
             _dbContext = dbContext;
         }
 
-        public Product AddCommentsToProduct(Guid productId, List<ProductComment> comments)
-        {
-            var product = GetById(productId);
-            foreach (var comment in comments)
-            {
-                product.Comments.Add(comment);
-            }
-            this._dbContext.SaveChanges();
-            return product;
-        }
-
         public Product AddCommentToProduct(Guid productId, ProductComment commentToAdd)
         {
             var product = GetById(productId);

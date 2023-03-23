@@ -10,14 +10,14 @@ namespace GamersChatAPI.Repositories
 
         }
 
-        DbSet<Cart> Carts { get; set; }
-        DbSet<News> News { get; set; }
-        DbSet<Post> Posts { get; set; }
-        DbSet<PostComment> PostComments { get; set; }
+        public DbSet<Cart> Carts { get; set; }
+        public DbSet<News> News { get; set; }
+        public DbSet<Post> Posts { get; set; }
+        public DbSet<PostComment> PostComments { get; set; }
         public DbSet<Product> Products { get; set; }
-        DbSet<ProductComment> ProductComments { get; set; }
-        DbSet<Timeline> Timelines { get; set; }
-        DbSet<User> Users { get; set; }
+        public DbSet<ProductComment> ProductComments { get; set; }
+        public DbSet<Timeline> Timelines { get; set; }
+        public DbSet<User> Users { get; set; }
 
     }
 

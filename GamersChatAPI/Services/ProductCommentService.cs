@@ -22,14 +22,14 @@ namespace GamersChatAPI.Services
             return this.pcRepository.GetById(id);
         }
 
-        public ProductComment AddComment(ProductComment productCommentToAdd)
+        public void AddComment(ProductComment productCommentToAdd)
         {
-            return this.pcRepository.Add(productCommentToAdd);
+            this.pcRepository.Add(productCommentToAdd);
         }
 
         public ProductComment UpdateComment(ProductComment commentToUpdate)
         {
-            return this.pcRepository.Update(commentToUpdate);
+             return this.pcRepository.Update(commentToUpdate);
         }
 
         public void RemoveComment(Guid id)

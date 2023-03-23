@@ -6,7 +6,7 @@ namespace GamersChatAPI.Repositories.Interfaces
     {
         public IEnumerable<PostComment> GetAll();
         public void DeleteById(Guid id);
-        public PostComment Add(PostComment commentToAdd);
+        public void Add(PostComment commentToAdd);
         public PostComment Update(PostComment commentToUpdate);
         public PostComment GetById(Guid id);
     }

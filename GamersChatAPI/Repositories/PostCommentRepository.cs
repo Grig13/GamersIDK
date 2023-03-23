@@ -25,12 +25,10 @@ namespace GamersChatAPI.Repositories
             return _dbContext.Set<PostComment>().ToList();
         }
 
-        public PostComment Add(PostComment commentToAdd)
+        public void Add(PostComment commentToAdd)
         {
-
-            var comment = this._dbContext.Set<PostComment>().Add(commentToAdd);
-            this._dbContext.SaveChanges();
-            return comment.Entity;
+            _dbContext.PostComments.Add(commentToAdd);
+            _dbContext.SaveChanges();
         }
 
         public PostComment GetById(Guid id)

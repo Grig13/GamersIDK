@@ -28,15 +28,10 @@ namespace GamersChatAPI.Controllers
         }
 
         [HttpPost]
-        public ProductComment Post([FromBody] ProductComment productComment)
+        public IActionResult Post([FromBody] ProductComment productComment)
         {
-            var productCommentToAdd = new ProductComment
-            {
-                CommentContent = productComment.CommentContent,
-                Grade = productComment.Grade
-            };
-
-            return this._pcService.AddComment(productCommentToAdd);
+            _pcService.AddComment(productComment);
+            return CreatedAtAction(nameof(GetCommentById), new { id = productComment.Id }, productComment);
         }
 
         [HttpPut("{id}")]

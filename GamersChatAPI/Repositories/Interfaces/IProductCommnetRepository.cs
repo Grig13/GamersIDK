@@ -8,6 +8,6 @@ namespace GamersChatAPI.Repositories.Interfaces
         public void DeleteById(Guid id);
         public ProductComment Update(ProductComment commentToUpdate);
         public ProductComment GetById(Guid id);
-        public ProductComment Add(ProductComment commentToADD);
+        public void Add(ProductComment commentToADD);
     }
 }

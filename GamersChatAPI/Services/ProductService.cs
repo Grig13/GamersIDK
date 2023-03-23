@@ -22,11 +22,6 @@ namespace GamersChatAPI.Services
             return this.productRepository.GetById(productId);
         }
 
-        public Product AddCommentsToProduct(Guid productId, List<ProductComment> comments)
-        {
-            return this.productRepository.AddCommentsToProduct(productId, comments);
-        }
-
         public Product AddCommentToProduct(Guid productId, ProductComment comment)
         {
             return this.productRepository.AddCommentToProduct(productId, comment);

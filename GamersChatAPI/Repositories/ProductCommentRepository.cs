@@ -16,24 +16,22 @@ namespace GamersChatAPI.Repositories
 
         public void DeleteById(Guid id)
         {
-            var commentToDelete = GetById(id);
-            _dbContext.Set<ProductComment>().Remove(commentToDelete);
-            _dbContext.SaveChanges();
+            var productComment = GetById(id);
+            if (productComment != null)
+            {
+                _dbContext.ProductComments.Remove(productComment);
+                _dbContext.SaveChanges();
+            }
         }
 
         public IEnumerable<ProductComment> GetAll()
         {
-            return _dbContext.Set<ProductComment>().ToList();
+            return _dbContext.ProductComments.ToList();
         }
 
         public ProductComment GetById(Guid id)
         {
-            var productCommToReturn = _dbContext.Set<ProductComment>().Where(a => a.Id == id).FirstOrDefault();
-            if (productCommToReturn == null)
-            {
-                throw new KeyNotFoundException("Comment not found.");
-            }
-            return productCommToReturn;
+            return _dbContext.ProductComments.SingleOrDefault(p => p.Id == id);
         }
 
         public ProductComment Update(ProductComment commentToUpdate)
@@ -43,24 +41,10 @@ namespace GamersChatAPI.Repositories
             return commentToUpdate;
         }
 
-        public ProductComment Add(ProductComment productCommentToAdd)
+        public void Add(ProductComment productCommentToAdd)
         {
-            using (var scope = new TransactionScope())
-            {
-                var productId = productCommentToAdd.ProductId;
-                var product = _dbContext.Set<Product>().FirstOrDefault(p => p.Id == productId);
-
-                if (product == null)
-                {
-                    throw new KeyNotFoundException("Product not found.");
-                }
-
-                var productComment = this._dbContext.Set<ProductComment>().Add(productCommentToAdd);
-                _dbContext.SaveChanges();
-
-                scope.Complete();
-                return productComment.Entity;
-            }
+           _dbContext.ProductComments.Add(productCommentToAdd);
+           _dbContext.SaveChanges();
         }
     }
 }

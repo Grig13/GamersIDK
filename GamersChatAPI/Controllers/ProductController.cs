@@ -29,18 +29,6 @@ namespace GamersChatAPI.Controllers
             return this._productService.GetProductById(id);
         }
 
-        [HttpPost("{productId}/add-comment")]
-        public Product AddCommentsToProduct(Guid productId, [FromBody] List<Guid> commentsId)
-        {
-            var comments = new List<ProductComment>();
-            foreach (var commentId in commentsId)
-            {
-                var commentToAdd = _pcService.GetCommentById(commentId);
-                comments.Add(commentToAdd);
-            }
-            return _productService.AddCommentsToProduct(productId, comments);
-        }
-
         [HttpPost("{productId}/add-comment/{commentId}")]
         public Product AddCommentToProduct(Guid productId, Guid commentId)
         {
