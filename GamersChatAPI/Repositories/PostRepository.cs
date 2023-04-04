@@ -24,18 +24,25 @@ namespace GamersChatAPI.Repositories
             return post;
         }
 
-        public Post Add(Post postToAdd)
+        public void Add(Post postToAdd)
         {
-            var post = this._dbContext.Add<Post>(postToAdd);
-            this._dbContext.SaveChanges();
-            return post.Entity;
+            _dbContext.Posts.Add(postToAdd);
+            _dbContext.SaveChanges();
         }
 
         public Post AddCommentToPost(Guid postId, PostComment commentToAdd)
         {
             var post = GetById(postId);
+            if (post == null)
+            {
+                throw new ArgumentException("Cart with given Id not found", nameof(postId));
+            }
+            if(post.PostComments == null)
+            {
+                post.PostComments = new List<PostComment>();
+            }
             post.PostComments.Add(commentToAdd);
-            _dbContext.SaveChanges();
+            this._dbContext.SaveChanges();
             return post;
         }
 

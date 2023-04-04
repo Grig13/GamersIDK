@@ -22,9 +22,9 @@ namespace GamersChatAPI.Services
             return this.postRepository.GetById(postId);
         }
 
-        public Post AddPost(Post postToAdd)
+        public void AddPost(Post postToAdd)
         {
-            return this.postRepository.Add(postToAdd);
+             this.postRepository.Add(postToAdd);
         }
 
         public Post AddCommentsToPost(Guid postId, List<PostComment> comments)

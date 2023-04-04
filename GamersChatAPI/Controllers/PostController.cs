@@ -30,15 +30,10 @@ namespace GamersChatAPI.Controllers
         }
 
         [HttpPost]
-        public Post Post(Post post)
+        public IActionResult Post([FromBody] Post post)
         {
-            var postToAdd = new Post
-            {
-                PostContent = post.PostContent,
-                PostImage = post.PostImage,
-                PostComments = post.PostComments
-            };
-            return this._postService.AddPost(postToAdd);
+            _postService.AddPost(post);
+            return CreatedAtAction(nameof(GetPostById), new { id = post.Id }, post);
         }
 
         [HttpPost("{postId}/add-comment")]
