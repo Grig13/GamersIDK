@@ -1,11 +1,13 @@
 ﻿using GamersChatAPI.Models;
 using GamersChatAPI.Services;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GamersChatAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("AllowOrigin")]
     public class NewsController : ControllerBase
     {
         private readonly NewsService _newsService;
