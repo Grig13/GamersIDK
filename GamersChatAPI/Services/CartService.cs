@@ -5,51 +5,41 @@ namespace GamersChatAPI.Services
 {
     public class CartService
     {
-        private readonly ICartRepository repository;
+        private readonly ICartRepository _cartRepository;
 
         public CartService(ICartRepository repository)
         {
-            this.repository = repository;
+            this._cartRepository = repository;
         }
 
         public IEnumerable<Cart> GetAllProductsFromCart()
         {
-            return this.repository.GetAll();
+            return this._cartRepository.GetAll();
         }
 
-        public Cart AddProductsToCart(Guid cartId, List<Product> productsToAdd)
+        public Cart GetCartByUserId(Guid userId)
         {
-            return this.repository.AddProductsToCart(cartId, productsToAdd);
+            return this._cartRepository.GetCartByUserId(userId);
         }
 
-        public Cart AddProductToCart(Guid cartId, Product productToAdd)
+        public void AddToCart(Guid userId, Guid productId)
         {
-            return this.repository.AddProductToCart(cartId, productToAdd);
+            _cartRepository.AddToCart(userId, productId);
         }
 
-        public Cart AddCart(Cart cartToAdd)
+        public void RemoveFromCart(Guid userId, Guid productId)
         {
-            return this.repository.Add(cartToAdd);
-        }
-
-        public Cart RemoveProductFromCart(Guid cartId, Product productToRemove)
-        {
-            return this.repository.RemoveProductFromCart(cartId, productToRemove);
+            _cartRepository.RemoveFromCart(userId, productId);
         }
 
         public Cart GetCartById(Guid id)
         {
-            return this.repository.GetById(id);
+            return this._cartRepository.GetById(id);
         }
 
-        public Cart UpdateCart(Cart cartToUpdate)
+        public void ClearCart(Guid userId)
         {
-            return this.repository.Update(cartToUpdate);
-        }
-
-        public void DeleteCart(Guid id)
-        {
-            this.repository.DeleteById(id);
+            _cartRepository.ClearCart(userId);
         }
     }
 }

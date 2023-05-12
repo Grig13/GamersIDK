@@ -15,39 +15,43 @@ namespace GamersChatAPI.Controllers
             _pcService = pcService;
         }
 
-        [HttpGet]
-        public IEnumerable<ProductComment> Get()
+        [HttpGet("product/{productId}")]
+        public IActionResult GetCommentsByProductId(Guid productId)
         {
-            return this._pcService.GetAllProductComments();
+            var comments = _pcService.GetCommentsByProductId(productId);
+            return Ok(comments);
         }
 
         [HttpGet("{id}")]
-        public ProductComment GetCommentById(Guid id)
+        public IActionResult GetCommentById(Guid id)
         {
-            return this._pcService.GetCommentById(id);
+            var comment =  this._pcService.GetCommentById(id);
+            return Ok(comment);
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] ProductComment productComment)
+        public IActionResult AddComment(ProductComment productComment)
         {
             _pcService.AddComment(productComment);
             return CreatedAtAction(nameof(GetCommentById), new { id = productComment.Id }, productComment);
         }
 
         [HttpPut("{id}")]
-        public ProductComment Update(Guid id, [FromBody] ProductComment comment)
+        public IActionResult Update(Guid id, [FromBody] ProductComment comment)
         {
-            var commentToEdit = _pcService.GetCommentById(id);
-            commentToEdit.CommentContent = comment.CommentContent;
-            commentToEdit.Grade = comment.Grade;
-            return this._pcService.UpdateComment(commentToEdit);
+            if (id != comment.Id)
+                return BadRequest();
+
+            _pcService.UpdateComment(comment);
+            return Ok();
         }
 
 
         [HttpDelete("{id}")]
-        public void Delete(Guid id)
+        public IActionResult Delete(Guid id)
         {
             this._pcService.RemoveComment(id);
+            return Ok();
         }
     }
 }

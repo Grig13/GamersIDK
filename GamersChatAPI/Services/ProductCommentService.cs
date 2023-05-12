@@ -12,9 +12,9 @@ namespace GamersChatAPI.Services
             this.pcRepository = pcRepository;
         }
 
-        public IEnumerable<ProductComment> GetAllProductComments()
+        public IEnumerable<ProductComment> GetCommentsByProductId(Guid productId)
         {
-            return this.pcRepository.GetAll();
+            return this.pcRepository.GetCommentsByProductId(productId);
         }
 
         public ProductComment GetCommentById(Guid id)
@@ -27,9 +27,9 @@ namespace GamersChatAPI.Services
             this.pcRepository.Add(productCommentToAdd);
         }
 
-        public ProductComment UpdateComment(ProductComment commentToUpdate)
+        public void UpdateComment(ProductComment commentToUpdate)
         {
-             return this.pcRepository.Update(commentToUpdate);
+              this.pcRepository.Update(commentToUpdate);
         }
 
         public void RemoveComment(Guid id)

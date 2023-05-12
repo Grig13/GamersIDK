@@ -13,32 +13,14 @@ namespace GamersChatAPI.Repositories
             _dbContext = dbContext;
         }
 
-        public Cart AddProductsToCart(Guid cartId, List<Product> productsToAdd)
+        public Cart GetCartByUserId(Guid userId)
         {
-            var cart = GetById(cartId);
-            foreach (var product in productsToAdd)
-            {
-                cart.Products.Add(product);
-            }
-            this._dbContext.SaveChanges();
-            return cart;
-        }
-
-        public Cart AddProductToCart(Guid cartId, Product productToAdd)
-        {
-            var cart = GetById(cartId);
-            if (cart == null)
-            {
-                throw new ArgumentException("Cart with given Id not found", nameof(cartId));
-            }
-            if(cart.Products == null)
-            {
-                cart.Products = new List<Product>();
-            }
-            cart.Products.Add(productToAdd);
-            this._dbContext.SaveChanges();
-            return cart;
-
+#pragma warning disable CS8603 // Possible null reference return.
+            return _dbContext.Set<Cart>()
+                .Include(c => c.CartItems)
+                .ThenInclude(ci => ci.Product)
+                .FirstOrDefault(c => c.UserId == userId);
+#pragma warning restore CS8603 // Possible null reference return.
         }
 
         public void DeleteById(Guid id)
@@ -63,26 +45,58 @@ namespace GamersChatAPI.Repositories
             return cartToReturn;
         }
 
-        public Cart RemoveProductFromCart(Guid cartId, Product productToRemove)
+        public void AddToCart(Guid userId, Guid productId)
         {
-            var cart = GetById(cartId);
-            cart.Products.Remove(productToRemove);
-            this._dbContext.SaveChanges();
-            return cart;
-        }
+            var cart = GetCartByUserId(userId);
 
-        public Cart Update(Cart cartToUpdate)
-        {
-            _dbContext.Set<Cart>().Update(cartToUpdate);
+            if (cart == null)
+            {
+                cart = new Cart { UserId = userId };
+                _dbContext.Set<Cart>().Add(cart);
+            }
+
+            var existingCartItem = cart.CartItems.FirstOrDefault(ci => ci.ProductId == productId);
+            if (existingCartItem != null)
+            {
+                existingCartItem.Quantity += 1;
+            }
+            else
+            {
+                var product = _dbContext.Set<Product>().Find(productId);
+                if (product != null)
+                {
+                    cart.CartItems.Add(new CartItem { ProductId = productId, Quantity = 1 });
+                }
+            }
+
             _dbContext.SaveChanges();
-            return cartToUpdate;
         }
 
-        public Cart Add(Cart cartToAdd)
+        public void RemoveFromCart(Guid userId, Guid productId)
         {
-            var cart = this._dbContext.Set<Cart>().Add(cartToAdd);
-            this._dbContext.SaveChanges();
-            return cart.Entity;
+            var cart = GetCartByUserId(userId);
+
+            if (cart != null)
+            {
+                var cartItem = cart.CartItems.FirstOrDefault(ci => ci.ProductId == productId);
+                if (cartItem != null)
+                {
+                    cart.CartItems.Remove(cartItem);
+                    _dbContext.Set<CartItem>().Remove(cartItem);
+                    _dbContext.SaveChanges();
+                }
+            }
+        }
+
+        public void ClearCart(Guid userId)
+        {
+            var cart = GetCartByUserId(userId);
+
+            if (cart != null)
+            {
+                cart.CartItems.Clear();
+                _dbContext.SaveChanges();
+            }
         }
     }
 }

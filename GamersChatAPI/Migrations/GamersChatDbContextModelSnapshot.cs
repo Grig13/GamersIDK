@@ -28,18 +28,36 @@ namespace GamersChatAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("ProductId")
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Carts");
+                });
+
+            modelBuilder.Entity("GamersChatAPI.Models.CartItem", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CartId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<int?>("TotalPrice")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.ToTable("Carts");
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex(new[] { "CartId" }, "IX_CartItem_CartId");
+
+                    b.ToTable("CartItem");
                 });
 
             modelBuilder.Entity("GamersChatAPI.Models.News", b =>
@@ -59,7 +77,6 @@ namespace GamersChatAPI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -88,9 +105,9 @@ namespace GamersChatAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TimelineId");
+                    b.HasIndex(new[] { "TimelineId" }, "IX_Posts_TimelineId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex(new[] { "UserId" }, "IX_Posts_UserId");
 
                     b.ToTable("Posts");
                 });
@@ -113,7 +130,7 @@ namespace GamersChatAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PostId");
+                    b.HasIndex(new[] { "PostId" }, "IX_PostComments_PostId");
 
                     b.ToTable("PostComments");
                 });
@@ -124,23 +141,22 @@ namespace GamersChatAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("CartId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Category")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
-                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Price")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CartId");
 
                     b.ToTable("Products");
                 });
@@ -152,18 +168,23 @@ namespace GamersChatAPI.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CommentContent")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Grade")
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("ProductId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int?>("Rating")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("ProductId")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("ProductComments");
                 });
@@ -198,17 +219,40 @@ namespace GamersChatAPI.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("GamersChatAPI.Models.CartItem", b =>
+                {
+                    b.HasOne("GamersChatAPI.Models.Cart", "Cart")
+                        .WithMany("CartItems")
+                        .HasForeignKey("CartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GamersChatAPI.Models.Product", "Product")
+                        .WithMany("CartItems")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cart");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("GamersChatAPI.Models.Post", b =>
                 {
-                    b.HasOne("GamersChatAPI.Models.Timeline", null)
+                    b.HasOne("GamersChatAPI.Models.Timeline", "Timeline")
                         .WithMany("Posts")
                         .HasForeignKey("TimelineId");
 
-                    b.HasOne("GamersChatAPI.Models.User", null)
+                    b.HasOne("GamersChatAPI.Models.User", "User")
                         .WithMany("Posts")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Timeline");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("GamersChatAPI.Models.PostComment", b =>
@@ -220,27 +264,20 @@ namespace GamersChatAPI.Migrations
                     b.Navigation("Post");
                 });
 
-            modelBuilder.Entity("GamersChatAPI.Models.Product", b =>
-                {
-                    b.HasOne("GamersChatAPI.Models.Cart", null)
-                        .WithMany("Products")
-                        .HasForeignKey("CartId");
-                });
-
             modelBuilder.Entity("GamersChatAPI.Models.ProductComment", b =>
                 {
-                    b.HasOne("GamersChatAPI.Models.Product", "Product")
-                        .WithMany("Comments")
-                        .HasForeignKey("ProductId")
+                    b.HasOne("GamersChatAPI.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Product");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("GamersChatAPI.Models.Cart", b =>
                 {
-                    b.Navigation("Products");
+                    b.Navigation("CartItems");
                 });
 
             modelBuilder.Entity("GamersChatAPI.Models.Post", b =>
@@ -250,7 +287,7 @@ namespace GamersChatAPI.Migrations
 
             modelBuilder.Entity("GamersChatAPI.Models.Product", b =>
                 {
-                    b.Navigation("Comments");
+                    b.Navigation("CartItems");
                 });
 
             modelBuilder.Entity("GamersChatAPI.Models.Timeline", b =>

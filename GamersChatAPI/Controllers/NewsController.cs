@@ -1,5 +1,6 @@
 ﻿using GamersChatAPI.Models;
 using GamersChatAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,10 +31,12 @@ namespace GamersChatAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public News Post([FromBody] News news)
         {
             var newsToAdd = new News
             {
+                Title = news.Title,
                 Content = news.Content,
                 Image = news.Image,
                 Attachment = news.Attachment
@@ -42,10 +45,12 @@ namespace GamersChatAPI.Controllers
             return this._newsService.AddNews(newsToAdd);
         }
 
+        [Authorize]
         [HttpPut("{id}")]
         public News Update(Guid id, [FromBody] News news)
         {
             var newsToEdit = _newsService.GetNewsById(id);
+            newsToEdit.Title = news.Title;
             newsToEdit.Content = news.Content;
             newsToEdit.Image = news.Image;
             newsToEdit.Attachment = news.Attachment;

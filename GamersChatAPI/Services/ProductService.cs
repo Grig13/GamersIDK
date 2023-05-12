@@ -22,24 +22,14 @@ namespace GamersChatAPI.Services
             return this.productRepository.GetById(productId);
         }
 
-        public Product AddCommentToProduct(Guid productId, ProductComment comment)
+        public void AddProduct(Product productToAdd)
         {
-            return this.productRepository.AddCommentToProduct(productId, comment);
-        }
-
-        public Product AddProduct(Product productToAdd)
-        {
-            return this.productRepository.Add(productToAdd);
+             this.productRepository.Add(productToAdd);
         }
 
         public Product ProductUpdate(Product productToUpdate)
         {
-            return this.productRepository.Update(productToUpdate);
-        }
-
-        public Product RemoveCommentFromProduct(Guid productId, ProductComment comment)
-        {
-            return this.productRepository.RemoveCommentFromProduct(productId, comment);
+             return this.productRepository.Update(productToUpdate);
         }
 
         public void DeleteProduct(Guid productId)

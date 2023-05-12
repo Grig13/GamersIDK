@@ -26,9 +26,9 @@ namespace GamersChatAPI.Repositories
 
         public News Add(News newsToAdd)
         {
-            var news = this._dbContext.Set<News>().Add(newsToAdd);
+            _dbContext.News.Add(newsToAdd);
             _dbContext.SaveChanges();
-            return news.Entity;
+            return newsToAdd;
         }
 
         public void DeleteById(Guid id)

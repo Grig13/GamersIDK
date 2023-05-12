@@ -13,19 +13,10 @@ namespace GamersChatAPI.Repositories
             _dbContext = dbContext;
         }
 
-        public Product AddCommentToProduct(Guid productId, ProductComment commentToAdd)
+        public void Add(Product productToAdd)
         {
-            var product = GetById(productId);
-            product.Comments.Add(commentToAdd);
-            this._dbContext.SaveChanges();
-            return product;
-        }
-
-        public Product Add(Product productToAdd)
-        {
-            var product = this._dbContext.Add<Product>(productToAdd);
+            _dbContext.Set<Product>().Add(productToAdd);
             _dbContext.SaveChanges();
-            return product.Entity;
         }
 
         public void DeleteById(Guid id)
@@ -50,19 +41,20 @@ namespace GamersChatAPI.Repositories
             return productToReturn;
         }
 
-        public Product RemoveCommentFromProduct(Guid productId, ProductComment commentToRemove)
-        {
-            var product = GetById(productId);
-            product.Comments.Remove(commentToRemove);
-            this._dbContext.SaveChanges();
-            return product;
-        }
-
         public Product Update(Product productToUpdate)
         {
-            _dbContext.Set<Product>().Update(productToUpdate);
+            var existingProduct = GetById(productToUpdate.Id);
+            if (existingProduct == null)
+            {
+                throw new ArgumentException($"News with id: {productToUpdate.Id} not found.");
+            }
+            existingProduct.Name = productToUpdate.Name;
+            existingProduct.Price = productToUpdate.Price;
+            existingProduct.Description = productToUpdate.Description;
+            existingProduct.ImageUrl = productToUpdate.ImageUrl;
+            existingProduct.Category = productToUpdate.Category;
             _dbContext.SaveChanges();
-            return productToUpdate;
+            return existingProduct;
         }
     }
 }

@@ -31,20 +31,26 @@ namespace GamersChatAPI.Repositories
 
         public ProductComment GetById(Guid id)
         {
-            return _dbContext.ProductComments.SingleOrDefault(p => p.Id == id);
+#pragma warning disable CS8603 // Possible null reference return.
+            return _dbContext.Set<ProductComment>().Find(id);
+#pragma warning restore CS8603 // Possible null reference return.
         }
 
-        public ProductComment Update(ProductComment commentToUpdate)
+        public void Update(ProductComment commentToUpdate)
         {
-            _dbContext.Set<ProductComment>().Update(commentToUpdate);
+            _dbContext.Entry(commentToUpdate).State = EntityState.Modified;
             _dbContext.SaveChanges();
-            return commentToUpdate;
         }
 
         public void Add(ProductComment productCommentToAdd)
         {
-           _dbContext.ProductComments.Add(productCommentToAdd);
+            _dbContext.Set<ProductComment>().Add(productCommentToAdd);
            _dbContext.SaveChanges();
+        }
+
+        public IEnumerable<ProductComment> GetCommentsByProductId(Guid productId)
+        {
+            return _dbContext.Set<ProductComment>().Where(c => c.ProductId == productId).ToList();
         }
     }
 }

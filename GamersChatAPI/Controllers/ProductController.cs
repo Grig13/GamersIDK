@@ -18,43 +18,24 @@ namespace GamersChatAPI.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Product> Get()
+        public IActionResult GetAllProducts()
         {
-            return this._productService.GetAllProducts();
+            var products = this._productService.GetAllProducts();
+            return Ok(products);
         }
 
         [HttpGet("{id}")]
-        public Product GetProductById(Guid id)
+        public IActionResult GetProductById(Guid id)
         {
-            return this._productService.GetProductById(id);
-        }
-
-        [HttpPost("{productId}/add-comment/{commentId}")]
-        public Product AddCommentToProduct(Guid productId, Guid commentId)
-        {
-            var comment = _pcService.GetCommentById(commentId);
-            return this._productService.AddCommentToProduct(productId, comment);
+            var comment =  this._productService.GetProductById(id);
+            return Ok(comment);
         }
 
         [HttpPost]
-        public Product Post(Product product)
+        public IActionResult AddProduct(Product product)
         {
-            var productToAdd = new Product
-            {
-                Name = product.Name,
-                Description = product.Description,
-                Price = product.Price,
-                Comments = product.Comments
-            };
-            return this._productService.AddProduct(productToAdd);
-        }
-
-        [HttpDelete("{productId}/{commentId}")]
-        public Product RemoveCommentFromProduct(Guid productId, Guid commentId)
-        {
-            var commentToRemove = new ProductComment();
-            commentToRemove = _pcService.GetCommentById(commentId);
-            return this._productService.RemoveCommentFromProduct(productId, commentToRemove);
+            _productService.AddProduct(product);
+            return Ok();
         }
 
         [HttpPut("{id}")]
@@ -62,15 +43,19 @@ namespace GamersChatAPI.Controllers
         {
             var productToEdit = _productService.GetProductById(id);
             productToEdit.Name = product.Name;
-            productToEdit.Price = product.Price;
             productToEdit.Description = product.Description;
+            productToEdit.Category = product.Category;
+            productToEdit.Price = product.Price;
+            productToEdit.ImageUrl = product.ImageUrl;
             return this._productService.ProductUpdate(productToEdit);
+
         }
 
-        [HttpDelete("{id}")]
-        public void Delete(Guid id)
+        [HttpDelete("{productId}")]
+        public IActionResult DeleteProduct(Guid productId)
         {
-            this._productService.DeleteProduct(id);
+            _productService.DeleteProduct(productId);
+            return Ok();
         }
     }
 }
