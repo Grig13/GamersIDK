@@ -5,10 +5,28 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using GamersChatAPI.Data;
 using GamersChatAPI.Areas.Identity.Data;
+using GamersChatAPI.AggregationServices;
+using GamersChatAPI.IdentityDataSeeding;
+using Duende.IdentityServer.Services;
+using Microsoft.AspNetCore.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+builder.Services.AddDbContext<GamersChatDbContext>(options =>
+    options.UseSqlServer(connectionString));
+
+builder.Services.AddDbContext<GamersChatAPIContext>(options =>
+    options.UseSqlServer(connectionString));
+
+
+builder.Services.AddDefaultIdentity<GamersChatAPIUser>(options => options.SignIn.RequireConfirmedAccount = true).AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<GamersChatAPIContext>();
+
+builder.Services.AddAuthentication().AddIdentityServerJwt();
+
+builder.Services.AddIdentityServer().AddDeveloperSigningCredential().AddApiAuthorization<GamersChatAPIUser, GamersChatAPIContext>();
 
 
 // Add services to the container.
@@ -33,8 +51,12 @@ builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<TimelineService>();
 builder.Services.AddScoped<ITimelineRepository, TimelineRepository>();
 
-builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<UserService>();
+
+builder.Services.AddScoped<UserAggregationService>();
+builder.Services.AddScoped<IdentityDataSeeding>();
 
 builder.Services.AddControllersWithViews().AddNewtonsoftJson(options =>
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
@@ -84,20 +106,12 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.SlidingExpiration = true;
 });
 
-builder.Services.AddDbContext<GamersChatDbContext>(options =>
-    options.UseSqlServer(connectionString));
 
-builder.Services.AddDbContext<GamersChatAPIContext>(options =>
-    options.UseSqlServer(connectionString));
-
-
-builder.Services.AddDefaultIdentity<GamersChatAPIUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<GamersChatAPIContext>();
-builder.Services.AddRazorPages();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
@@ -113,16 +127,24 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-app.UseHttpsRedirection();
-app.UseAuthentication();;
-
-app.UseAuthorization();
 app.MapRazorPages();
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
 app.UseRouting();
 
+app.UseAuthentication();;
+app.UseIdentityServer();
+app.UseAuthorization();
 
 app.UseCors();
 
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var seedService = scope.ServiceProvider.GetRequiredService<IdentityDataSeeding>();
+    await seedService.SeedData();
+}
 
 app.Run();

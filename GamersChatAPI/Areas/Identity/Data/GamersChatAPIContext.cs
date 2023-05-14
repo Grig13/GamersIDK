@@ -1,14 +1,17 @@
-﻿using GamersChatAPI.Areas.Identity.Data;
+﻿using Duende.IdentityServer.EntityFramework.Options;
+using GamersChatAPI.Areas.Identity.Data;
+using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace GamersChatAPI.Data;
 
-public class GamersChatAPIContext : IdentityDbContext<GamersChatAPIUser>
+public class GamersChatAPIContext : ApiAuthorizationDbContext<GamersChatAPIUser>
 {
-    public GamersChatAPIContext(DbContextOptions<GamersChatAPIContext> options)
-        : base(options)
+    public GamersChatAPIContext(DbContextOptions<GamersChatAPIContext> options, IOptions<OperationalStoreOptions> operationalStoreOptions)
+        : base(options, operationalStoreOptions)
     {
     }
 

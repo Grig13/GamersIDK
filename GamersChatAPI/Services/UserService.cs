@@ -36,5 +36,15 @@ namespace GamersChatAPI.Services
         {
             return this.userRepository.Add(userToAdd);
         }
+
+        public IEnumerable<User> GetNormalUsers()
+        {
+            return this.userRepository.GetNormalUsers();
+        }
+
+        public IEnumerable<User> GetAdminUsers()
+        {
+            return this.userRepository.GetAdminUsers();
+        }
     }
 }

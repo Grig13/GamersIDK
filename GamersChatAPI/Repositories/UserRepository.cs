@@ -27,6 +27,11 @@ namespace GamersChatAPI.Repositories
             _dbContext.SaveChanges();
         }
 
+        public IEnumerable<User> GetAdminUsers()
+        {
+            return _dbContext.Set<User>().Where(a => a.Role == "Admin").Include(b => b.Posts).ToList();
+        }
+
         public IEnumerable<User> GetAll()
         {
             return _dbContext.Set<User>().ToList();
@@ -40,6 +45,11 @@ namespace GamersChatAPI.Repositories
                 throw new KeyNotFoundException("User not found.");
             }
             return user;
+        }
+
+        public IEnumerable<User> GetNormalUsers()
+        {
+            return _dbContext.Set<User>().Where(a => a.Role == "User").Include(b => b.Posts).ToList();
         }
 
         public User Update(User userToUpdate)
