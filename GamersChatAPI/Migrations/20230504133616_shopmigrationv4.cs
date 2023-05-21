@@ -36,26 +36,26 @@ namespace GamersChatAPI.Migrations
             //    principalColumn: "Id",
             //    onDelete: ReferentialAction.SetDefault);
 
-            migrationBuilder.DropForeignKey(
-                name: "FK_ProductComments_Products_ProductId",
-                table: "ProductComments");
+            //migrationBuilder.DropForeignKey(
+            //    name: "FK_ProductComments_Products_ProductId",
+            //    table: "ProductComments");
 
-            migrationBuilder.AddColumn<Guid>(
-                name: "ProductIdNullable",
-                table: "ProductComments",
-                type: "uniqueidentifier",
-                nullable: true);
+            //migrationBuilder.AddColumn<Guid>(
+            //    name: "ProductIdNullable",
+            //    table: "ProductComments",
+            //    type: "uniqueidentifier",
+            //    nullable: true);
 
-            migrationBuilder.Sql("UPDATE ProductComments SET ProductIdNullable = ProductId");
+            //migrationBuilder.Sql("UPDATE ProductComments SET ProductIdNullable = ProductId");
 
-            migrationBuilder.DropColumn(
-                name: "ProductId",
-                table: "ProductComments");
+            //migrationBuilder.DropColumn(
+            //    name: "ProductId",
+            //    table: "ProductComments");
 
-            migrationBuilder.RenameColumn(
-                name: "ProductIdNullable",
-                table: "ProductComments",
-                newName: "ProductId");
+            //migrationBuilder.RenameColumn(
+            //    name: "ProductIdNullable",
+            //    table: "ProductComments",
+            //    newName: "ProductId");
 
             //migrationBuilder.AddForeignKey(
             //    name: "FK_ProductComments_Products_ProductId",
@@ -70,9 +70,9 @@ namespace GamersChatAPI.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_ProductComments_Products_ProductId",
-                table: "ProductComments");
+            //migrationBuilder.DropForeignKey(
+            //    name: "FK_ProductComments_Products_ProductId",
+            //    table: "ProductComments");
 
             migrationBuilder.AlterColumn<Guid>(
                 name: "ProductId",

@@ -9,6 +9,7 @@ namespace GamersChatAPI.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [EnableCors("AllowOrigin")]
+    [Authorize]
     public class NewsController : ControllerBase
     {
         private readonly NewsService _newsService;
@@ -31,7 +32,6 @@ namespace GamersChatAPI.Controllers
         }
 
         [HttpPost]
-        [Authorize]
         public News Post([FromBody] News news)
         {
             var newsToAdd = new News

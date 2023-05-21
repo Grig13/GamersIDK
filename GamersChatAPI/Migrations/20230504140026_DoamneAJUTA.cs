@@ -10,16 +10,16 @@ namespace GamersChatAPI.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_ProductComments_Products_ProductId",
-                table: "ProductComments");
+            //migrationBuilder.DropForeignKey(
+            //    name: "FK_ProductComments_Products_ProductId",
+            //    table: "ProductComments");
 
-            migrationBuilder.AlterColumn<Guid>(
-                name: "ProductId",
-                table: "ProductComments",
-                nullable: true,  // Make the column nullable
-                oldClrType: typeof(Guid),
-                oldType: "uniqueidentifier");
+            //migrationBuilder.AlterColumn<Guid>(
+            //    name: "ProductId",
+            //    table: "ProductComments",
+            //    nullable: false,  // Make the column nullable
+            //    oldClrType: typeof(Guid),
+            //    oldType: "uniqueidentifier");
 
             //migrationBuilder.AddForeignKey(
             //    name: "FK_ProductComments_Products_ProductId",

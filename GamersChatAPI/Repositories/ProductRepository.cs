@@ -43,7 +43,7 @@ namespace GamersChatAPI.Repositories
 
         public Product Update(Product productToUpdate)
         {
-            var existingProduct = GetById(productToUpdate.Id);
+            var existingProduct = GetById((Guid)productToUpdate.Id);
             if (existingProduct == null)
             {
                 throw new ArgumentException($"News with id: {productToUpdate.Id} not found.");

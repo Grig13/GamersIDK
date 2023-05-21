@@ -136,7 +136,12 @@ app.UseRouting();
 app.UseAuthentication();;
 app.UseIdentityServer();
 app.UseAuthorization();
-
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllerRoute(
+        name: "Identity",
+        pattern: "Identity/{controller=Account}/{action=Login}/{id?}");
+});
 app.UseCors();
 
 app.MapControllers();

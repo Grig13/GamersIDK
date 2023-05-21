@@ -1,11 +1,13 @@
 ﻿using GamersChatAPI.Models;
 using GamersChatAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GamersChatAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CartItemController : ControllerBase
     {
         private readonly CartItemService _cartItemService;

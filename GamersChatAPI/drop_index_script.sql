@@ -160,11 +160,11 @@ GO
 BEGIN TRANSACTION;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20230318112422_ThirdMigration')
-BEGIN
-    ALTER TABLE [ProductComments] DROP CONSTRAINT [FK_ProductComments_Products_ProductId];
-END;
-GO
+--IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20230318112422_ThirdMigration')
+--BEGIN
+--    ALTER TABLE [ProductComments] DROP CONSTRAINT [FK_ProductComments_Products_ProductId];
+--END;
+--GO
 
 IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20230318112422_ThirdMigration')
 BEGIN
@@ -177,21 +177,39 @@ BEGIN
     ALTER TABLE [ProductComments] DROP COLUMN [PorudctId];
 END;
 GO
-
 IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20230318112422_ThirdMigration')
 BEGIN
-    DROP INDEX [IX_ProductComments_ProductId] ON [ProductComments];
-    DECLARE @var1 sysname;
-    SELECT @var1 = [d].[name]
+    -- Drop the index if it exists
+    IF EXISTS(SELECT * FROM sys.indexes WHERE name = 'IX_ProductComments_ProductId' AND object_id = OBJECT_ID('ProductComments'))
+    BEGIN
+        DROP INDEX [IX_ProductComments_ProductId] ON [ProductComments];
+    END
+
+    -- Drop the default constraint if it exists
+    DECLARE @defaultConstraintName sysname;
+    SELECT @defaultConstraintName = [d].[name]
     FROM [sys].[default_constraints] [d]
     INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
     WHERE ([d].[parent_object_id] = OBJECT_ID(N'[ProductComments]') AND [c].[name] = N'ProductId');
-    IF @var1 IS NOT NULL EXEC(N'ALTER TABLE [ProductComments] DROP CONSTRAINT [' + @var1 + '];');
-    EXEC(N'UPDATE [ProductComments] SET [ProductId] = ''00000000-0000-0000-0000-000000000000'' WHERE [ProductId] IS NULL');
+
+    IF @defaultConstraintName IS NOT NULL
+    BEGIN
+        EXEC(N'ALTER TABLE [ProductComments] DROP CONSTRAINT [' + @defaultConstraintName + '];');
+    END
+
+    -- Update existing null values to a non-null value
+    UPDATE [ProductComments] SET [ProductId] = '00000000-0000-0000-0000-000000000000' WHERE [ProductId] IS NULL;
+
+    -- Alter the column to be non-null
     ALTER TABLE [ProductComments] ALTER COLUMN [ProductId] uniqueidentifier NOT NULL;
-    ALTER TABLE [ProductComments] ADD DEFAULT '00000000-0000-0000-0000-000000000000' FOR [ProductId];
+
+    -- Add a new default constraint
+    ALTER TABLE [ProductComments] ADD CONSTRAINT [DF_ProductComments_ProductId] DEFAULT '00000000-0000-0000-0000-000000000000' FOR [ProductId];
+
+    -- Create the index again
     CREATE INDEX [IX_ProductComments_ProductId] ON [ProductComments] ([ProductId]);
 END;
+
 GO
 
 IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20230318112422_ThirdMigration')
@@ -562,22 +580,36 @@ GO
 BEGIN TRANSACTION;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20230504131803_shopmigrationv3')
-BEGIN
-    ALTER TABLE [ProductComments] DROP CONSTRAINT [FK_ProductComments_Products_ProductId];
-END;
-GO
+--IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20230504131803_shopmigrationv3')
+--BEGIN
+--    ALTER TABLE [ProductComments] DROP CONSTRAINT [FK_ProductComments_Products_ProductId];
+--END;
+--GO
 
 IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20230504131803_shopmigrationv3')
 BEGIN
-    DECLARE @var13 sysname;
-    SELECT @var13 = [d].[name]
+    -- Drop the default constraint if it exists
+    DECLARE @defaultConstraintName sysname;
+    SELECT @defaultConstraintName = [d].[name]
     FROM [sys].[default_constraints] [d]
     INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
     WHERE ([d].[parent_object_id] = OBJECT_ID(N'[ProductComments]') AND [c].[name] = N'ProductId');
-    IF @var13 IS NOT NULL EXEC(N'ALTER TABLE [ProductComments] DROP CONSTRAINT [' + @var13 + '];');
+
+    IF @defaultConstraintName IS NOT NULL
+    BEGIN
+        EXEC(N'ALTER TABLE [ProductComments] DROP CONSTRAINT [' + @defaultConstraintName + '];');
+    END
+
+    -- Drop the foreign key constraint if it exists
+    IF EXISTS(SELECT * FROM sys.foreign_keys WHERE parent_object_id = OBJECT_ID('ProductComments') AND referenced_object_id = OBJECT_ID('Products'))
+    BEGIN
+        ALTER TABLE [ProductComments] DROP CONSTRAINT [FK_ProductComments_Products];
+    END
+
+    -- Alter the column to allow NULL values
     ALTER TABLE [ProductComments] ALTER COLUMN [ProductId] uniqueidentifier NULL;
 END;
+
 GO
 
 IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20230504131803_shopmigrationv3')
@@ -609,23 +641,23 @@ BEGIN
 END;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20230504133616_shopmigrationv4')
-BEGIN
-    ALTER TABLE [ProductComments] DROP CONSTRAINT [FK_ProductComments_Products_ProductId];
-END;
-GO
+--IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20230504133616_shopmigrationv4')
+--BEGIN
+--    ALTER TABLE [ProductComments] DROP CONSTRAINT [FK_ProductComments_Products_ProductId];
+--END;
+--GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20230504133616_shopmigrationv4')
-BEGIN
-    ALTER TABLE [ProductComments] ADD [ProductIdNullable] uniqueidentifier NULL;
-END;
-GO
+--IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20230504133616_shopmigrationv4')
+--BEGIN
+--    ALTER TABLE [ProductComments] ADD [ProductIdNullable] uniqueidentifier NULL;
+--END;
+--GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20230504133616_shopmigrationv4')
-BEGIN
-    UPDATE ProductComments SET ProductIdNullable = ProductId
-END;
-GO
+--IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20230504133616_shopmigrationv4')
+--BEGIN
+--    UPDATE ProductComments SET ProductIdNullable = ProductId
+--END;
+--GO
 
 IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20230504133616_shopmigrationv4')
 BEGIN
@@ -639,11 +671,11 @@ BEGIN
 END;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20230504133616_shopmigrationv4')
-BEGIN
-    EXEC sp_rename N'[ProductComments].[ProductIdNullable]', N'ProductId', N'COLUMN';
-END;
-GO
+--IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20230504133616_shopmigrationv4')
+--BEGIN
+--    EXEC sp_rename N'[ProductComments].[ProductIdNullable]', N'ProductId', N'COLUMN';
+--END;
+--GO
 
 IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20230504133616_shopmigrationv4')
 BEGIN
@@ -732,11 +764,11 @@ GO
 BEGIN TRANSACTION;
 GO
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20230504140026_DoamneAJUTA')
-BEGIN
-    ALTER TABLE [ProductComments] DROP CONSTRAINT [FK_ProductComments_Products_ProductId];
-END;
-GO
+--IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20230504140026_DoamneAJUTA')
+--BEGIN
+--    ALTER TABLE [ProductComments] DROP CONSTRAINT [FK_ProductComments_Products_ProductId];
+--END;
+--GO
 
 IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20230504140026_DoamneAJUTA')
 BEGIN

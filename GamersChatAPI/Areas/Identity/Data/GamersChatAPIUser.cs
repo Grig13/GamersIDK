@@ -9,6 +9,6 @@ namespace GamersChatAPI.Areas.Identity.Data;
 // Add profile data for application users by adding properties to the GamersChatAPIUser class
 public class GamersChatAPIUser : IdentityUser
 {
-    public GamersChatAPIUser(string userName) : base(userName) { }
+    public GamersChatAPIUser() : base() { }
 }
 

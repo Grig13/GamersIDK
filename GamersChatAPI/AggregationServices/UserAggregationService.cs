@@ -41,9 +41,7 @@ namespace GamersChatAPI.AggregationServices
             if (!roleExists)
                 throw new ArgumentException("The role specified for the user is invalid", "newUser");
 
-            var identityUser = new GamersChatAPIUser(newUser.Email);
-            identityUser.Email = newUser.Email;
-            identityUser.EmailConfirmed = true;
+            var identityUser = new GamersChatAPIUser { UserName = newUser.Email, Email = newUser.Email, EmailConfirmed = true };
             var createUserResult = await userManager.CreateAsync(identityUser, password);
             if(createUserResult != IdentityResult.Success)
             {
@@ -65,7 +63,7 @@ namespace GamersChatAPI.AggregationServices
 
         public async Task DeleteUser(User newUser)
         {
-            var userToDelete = new GamersChatAPIUser(newUser.Email);
+            var userToDelete = await userManager.FindByNameAsync(newUser.Email);
             userToDelete.Id = newUser.Id.ToString();
             await userManager.DeleteAsync(userToDelete);
             userService.RemoveUser(newUser.Id);

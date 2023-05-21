@@ -37,9 +37,9 @@ namespace GamersChatAPI.Migrations
         {
             migrationBuilder.Sql("DELETE FROM ProductComments");
 
-            migrationBuilder.DropForeignKey(
-                name: "FK_ProductComments_Products_ProductId",
-                table: "ProductComments");
+            //migrationBuilder.DropForeignKey(
+            //    name: "FK_ProductComments_Products_ProductId",
+            //    table: "ProductComments");
 
             migrationBuilder.AlterColumn<Guid>(
                 name: "ProductId",

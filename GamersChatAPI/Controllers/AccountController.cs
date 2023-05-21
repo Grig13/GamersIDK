@@ -18,6 +18,7 @@ namespace GamersChatAPI.Controllers
         [HttpGet]
         public IActionResult Login()
         {
+
             return View();
         }
 

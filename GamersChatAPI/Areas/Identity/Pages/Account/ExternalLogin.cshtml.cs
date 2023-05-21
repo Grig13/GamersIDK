@@ -103,13 +103,13 @@ namespace GamersChatAPI.Areas.Identity.Pages.Account
             if (remoteError != null)
             {
                 ErrorMessage = $"Error from external provider: {remoteError}";
-                return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
+                return RedirectToPage(",/Login", "./Account", new { returnUrl = "./News" });
             }
             var info = await _signInManager.GetExternalLoginInfoAsync();
             if (info == null)
             {
                 ErrorMessage = "Error loading external login information.";
-                return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
+                return RedirectToPage("./Login", "./Account", new { returnUrl = "./News" });
             }
 
             // Sign in the user with this external login provider if the user already has a login.
