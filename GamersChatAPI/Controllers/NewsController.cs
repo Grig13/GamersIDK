@@ -9,7 +9,6 @@ namespace GamersChatAPI.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [EnableCors("AllowOrigin")]
-    [Authorize]
     public class NewsController : ControllerBase
     {
         private readonly NewsService _newsService;
@@ -45,7 +44,6 @@ namespace GamersChatAPI.Controllers
             return this._newsService.AddNews(newsToAdd);
         }
 
-        [Authorize]
         [HttpPut("{id}")]
         public News Update(Guid id, [FromBody] News news)
         {
